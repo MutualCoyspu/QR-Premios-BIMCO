@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Revelá tu Premio!</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafafa;
+            color: #1a1a1a;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        .font-serif-elegant {
+            font-family: 'Cinzel', serif;
+        }
+
+        @keyframes fade-in-up {
+            0% { transform: translateY(15px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-fade-in-up {
+            animation: fade-in-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .animate-delay-1 {
+            animation-delay: 0.3s;
+        }
+        .animate-delay-2 {
+            animation-delay: 0.6s;
+        }
+        @keyframes pulse-elegant {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .animate-pulse-elegant {
+            animation: pulse-elegant 1.5s infinite ease-in-out;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFDF73 0%, #D4AF37 50%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(22, 101, 52, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, #FFDF73 0%, #D4AF37 50%, #AA7C11 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .store-btn {
+            background-color: #1a1a1a;
+            color: white;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            border-radius: 12px;
+            padding: 10px 18px;
+            text-decoration: none;
+            width: 180px;
+            border: 1px solid #333;
+            justify-content: flex-start;
+        }
+        .store-btn:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .store-btn img {
+            width: 28px;
+            height: 28px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .store-text-container {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .store-text-small {
+            font-size: 0.65rem;
+            line-height: 1;
+            margin-bottom: 3px;
+            color: #d1d5db;
+        }
+        .store-text-large {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1;
+            letter-spacing: -0.02em;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-center min-h-screen px-4 py-8">
+    
+    <div class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-green-50 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+    <div class="w-full max-w-lg mx-auto flex flex-col items-center z-10">
+        
+        <div class="mb-2 animate-fade-in-up">
+            <!-- Reemplazá este src con el link a tu logo -->
+            <img src="logo_BIMCO.png" alt="Logo Billetera" class="h-24 md:h-32 object-contain drop-shadow-sm opacity-90 hover:opacity-100 transition-opacity">
+        </div>
+
+        <div class="glass-card rounded-3xl p-8 md:p-10 w-full text-center mb-10 relative overflow-hidden" id="main-card">
+            
+            <!-- Pantalla de Cuenta Regresiva -->
+            <div id="countdown-screen" class="flex flex-col items-center justify-center py-8">
+                <p class="text-sm text-gray-500 uppercase tracking-[0.2em] mb-4 font-medium">Revelando en</p>
+                <div id="countdown" class="text-7xl font-serif-elegant font-bold text-gray-800 animate-pulse-elegant">3</div>
+            </div>
+
+            <!-- Pantalla de Resultado (Oculta al inicio) -->
+            <div id="result-screen" class="hidden py-4">
+                <div class="animate-fade-in-up">
+                    <h1 id="prize-text" class="font-serif-elegant text-5xl md:text-6xl mb-4 font-bold tracking-tight text-gray-800">
+                        <!-- Monto del Premio -->
+                    </h1>
+                    
+                    <p id="message-text" class="text-base font-medium text-gray-500 mt-2 px-4">
+                        <!-- Mensaje -->
+                    </p>
+                </div>
+
+                <!-- Mensaje para el Staff -->
+                <div id="action-container" class="mt-8 hidden animate-fade-in-up animate-delay-1">
+                    <div class="h-[1px] w-16 bg-gray-200 mx-auto mb-4"></div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-[#166534] font-bold bg-green-50 inline-block px-4 py-2 rounded-full border border-green-100">
+                        Presentar al staff del evento
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="download-section" class="hidden w-full text-center px-2 animate-fade-in-up animate-delay-2">
+            <h2 class="text-[#2d3748] text-xl md:text-2xl font-bold mb-3">¡Llevá tu billetera siempre con vos!</h2>
+            <p class="text-[#718096] text-sm md:text-base mb-8 leading-relaxed font-light max-w-sm mx-auto">
+                Descargá la app de Bimco y empezá a disfrutar de facilidades y ahorros exclusivos para nuestros asociados.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                
+                <!-- Botón Google Play -->
+                <a href="https://play.google.com/store/apps/details?id=com.agilpagos.coyspuapp&hl=es_AR" target="_blank" class="store-btn shadow-lg">
+                    <img src="https://img.icons8.com/color/50/google-play.png" alt="Google Play">
+                    <div class="store-text-container">
+                        <span class="store-text-small">Descargar en</span>
+                        <span class="store-text-large">Google Play</span>
+                    </div>
+                </a>
+
+                <!-- Botón App Store -->
+                <a href="https://apps.apple.com/us/app/billetera-mutual-coyspu/id1659915883" target="_blank" class="store-btn shadow-lg">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/mac-os.png" alt="App Store">
+                    <div class="store-text-container">
+                        <span class="store-text-small">Descargar en</span>
+                        <span class="store-text-large">App Store</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const winSound = new Audio('triunfo.mp3');
+        // Diccionario de códigos (Mantenemos los originales)
+        const prizeCodes = {
+            'xhtlrm':  { amount: '$5.000', win: true },
+            'xtrssm': { amount: '$10.000', win: true },
+            'xftlrm': { amount: '$15.000', win: true },
+            'xtrsdd':    { amount: null, win: false }
+        };
+
+        const countdownEl = document.getElementById('countdown');
+        const countdownScreen = document.getElementById('countdown-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const prizeText = document.getElementById('prize-text');
+        const messageText = document.getElementById('message-text');
+        const actionContainer = document.getElementById('action-container');
+        const downloadSection = document.getElementById('download-section');
+
+        // Leer parámetro de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('c');
+        
+        let timeLeft = 3;
+
+        function fireConfetti() {
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                // Lado izquierdo
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#166534', '#ffffff', '#22c55e'] // Verde oscuro, blanco, verde claro
+                });
+                // Lado derecho
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#166534', '#ffffff', '#22c55e']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        function revealPrize() {
+            countdownScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            // Mostrar la sección de descarga siempre al final
+            downloadSection.classList.remove('hidden');
+
+            const prize = prizeCodes[code];
+
+            if (prize && prize.win) {
+
+                prizeText.textContent = prize.amount;
+                prizeText.classList.add('gold-gradient');
+                prizeText.classList.remove('text-gray-800');
+                
+                messageText.textContent = '¡Felicidades! Ganaste un premio exclusivo.';
+                actionContainer.classList.remove('hidden'); // Mostrar el aviso al staff
+                
+                winSound.play().catch(error => console.log("El navegador bloqueó el sonido:", error));
+
+                setTimeout(fireConfetti, 100); // Disparar confeti
+
+            } else if (prize && !prize.win) {
+                
+                prizeText.textContent = '¡Ups!';
+                prizeText.classList.remove('gold-gradient');
+                prizeText.classList.add('text-gray-400');
+                
+                messageText.textContent = 'Suerte la próxima vez. ¡Gracias por participar!';
+            } else {
+                
+                prizeText.textContent = 'Error';
+                prizeText.classList.add('text-gray-400');
+                messageText.textContent = 'Código QR no válido o expirado.';
+            }
+        }
+
+        const timer = setInterval(() => {
+            timeLeft--;
+            if (timeLeft > 0) {
+                countdownEl.textContent = timeLeft;
+            } else {
+                clearInterval(timer);
+                revealPrize();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
