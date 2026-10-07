@@ -254,7 +254,7 @@
 
             } else if (prize && !prize.win) {
                 
-                prizeText.textContent = '¡Ups!';
+                prizeText.innerHTML = '¡Ups! <span class="inline-block align-middle text-4xl md:text-5xl opacity-60 filter grayscale transition-all duration-500 hover:grayscale-0 hover:opacity-100 cursor-default">😔</span>';
                 prizeText.classList.remove('gold-gradient');
                 prizeText.classList.add('text-gray-400');
                 
